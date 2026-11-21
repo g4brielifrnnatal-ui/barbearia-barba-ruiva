@@ -1,1 +1,1 @@
-# barbearia-barba-ruiva
+# barba-ruiva-barbearia
