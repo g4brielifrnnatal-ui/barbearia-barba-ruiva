@@ -1,5 +1,5 @@
 export const CONFIG = {
-  SUPABASE_URL: 'https://SEU-PROJETO.supabase.co',
+  SUPABASE_URL: 'https://qoreclirqhdcmiyjcijl.supabase.co',
   SUPABASE_ANON_KEY: 'SUA_ANON_KEY_AQUI',
   BARBEARIA: {
     nome: 'Barba Ruiva Barbearia',
