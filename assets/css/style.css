@@ -1,5 +1,5 @@
 :root {
-  /* Cores — DESIGN.md */
+  /* Cores — Base DESIGN.md + Laranja da Logo Barba Ruiva */
   --color-espresso: #140b00;
   --color-midnight-cocoa: #0b0600;
   --color-warm-cream: #fff1e0;
@@ -8,7 +8,7 @@
   --color-cedar: #4f4538;
   --color-driftwood: #85796c;
   --color-burnt-edge: #181109;
-  --color-amber-forge: #ffb442;
+  --color-amber-forge: #ff5500;
 
   /* Tipografia */
   --font-primary: 'PP Neue Montreal', 'Manrope', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -200,7 +200,7 @@ img {
 
 .btn-primary {
   background-color: var(--color-amber-forge);
-  color: var(--color-espresso);
+  color: var(--color-warm-cream);
   border-color: var(--color-amber-forge);
 }
 
@@ -436,7 +436,7 @@ img {
   margin-bottom: 8px;
 }
 
-/* Inputs e Selects em formato pill com contorno Cedar e foco Amber Forge */
+/* Inputs e Selects em formato pill com contorno Cedar e foco no laranja da logo */
 .form-group input,
 .form-group select {
   width: 100%;
@@ -514,7 +514,7 @@ img {
 .slot-btn.selected {
   background-color: var(--color-amber-forge);
   border-color: var(--color-amber-forge);
-  color: var(--color-espresso);
+  color: var(--color-warm-cream);
 }
 
 /* LGPD */
