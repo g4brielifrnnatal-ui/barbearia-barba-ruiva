@@ -2,8 +2,8 @@ import { CONFIG } from './config.js';
 import { gerarHorariosDisponiveis } from './schedule.js';
 
 const HEADERS = {
-  apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcmVjbGlycWhkY21peWpjaWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyODgwMjcsImV4cCI6MjExMDg2NDAyN30.5eKLdzvNtMhV-yVmNS8qEFhEONwxKr-d8Nhsu27c-OM,
-  Authorization: `Bearer ${eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcmVjbGlycWhkY21peWpjaWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyODgwMjcsImV4cCI6MjExMDg2NDAyN30.5eKLdzvNtMhV-yVmNS8qEFhEONwxKr-d8Nhsu27c-OM}`,
+  apikey: CONFIG.SUPABASE_ANON_KEY,
+  Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
   'Content-Type': 'application/json'
 };
 
@@ -77,7 +77,7 @@ async function carregarServicos() {
 async function carregarProdutos() {
   try {
     const res = await fetch(
-      `${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/produtos?em_estoque=eq.true&order=created_at.desc`,
+      `${CONFIG.SUPABASE_URL}/rest/v1/produtos?em_estoque=eq.true&order=created_at.desc`,
       { headers: HEADERS }
     );
     const produtos = await res.json();
@@ -129,11 +129,11 @@ async function atualizarHorariosLivres() {
   try {
     const [resAgendamentos, resBloqueios] = await Promise.all([
       fetch(
-        `${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/agendamentos?data_agendamento=eq.${dataStr}&status=in.(pendente,confirmado)&select=horario_inicio,horario_fim`,
+        `${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?data_agendamento=eq.${dataStr}&status=in.(pendente,confirmado)&select=horario_inicio,horario_fim`,
         { headers: HEADERS }
       ),
       fetch(
-        `${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/bloqueios_agenda?data_bloqueio=eq.${dataStr}&select=hora_inicio,hora_fim`,
+        `${CONFIG.SUPABASE_URL}/rest/v1/bloqueios_agenda?data_bloqueio=eq.${dataStr}&select=hora_inicio,hora_fim`,
         { headers: HEADERS }
       )
     ]);
@@ -207,7 +207,7 @@ formAgendamentoEl.addEventListener('submit', async (e) => {
   };
 
   try {
-    const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/agendamentos`, {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos`, {
       method: 'POST',
       headers: { ...HEADERS, Prefer: 'return=representation' },
       body: JSON.stringify(payload)
