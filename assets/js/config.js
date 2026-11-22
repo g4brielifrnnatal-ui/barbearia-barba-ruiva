@@ -1,6 +1,6 @@
 export const CONFIG = {
   SUPABASE_URL: 'https://qoreclirqhdcmiyjcijl.supabase.co/rest/v1/',
-  SUPABASE_ANON_KEY: 'sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcmVjbGlycWhkY21peWpjaWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyODgwMjcsImV4cCI6MjExMDg2NDAyN30.5eKLdzvNtMhV-yVmNS8qEFhEONwxKr-d8Nhsu27c-OM',
   BARBEARIA: {
     nome: 'Barba Ruiva Barbearia',
     whatsapp: '5584988063250',
