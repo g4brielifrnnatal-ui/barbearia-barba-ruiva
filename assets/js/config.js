@@ -1,6 +1,6 @@
 export const CONFIG = {
   SUPABASE_URL: 'https://qoreclirqhdcmiyjcijl.supabase.co/rest/v1/',
-  SUPABASE_ANON_KEY: 'SUA_ANON_KEY_AQUI',
+  SUPABASE_ANON_KEY: 'sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm',
   BARBEARIA: {
     nome: 'Barba Ruiva Barbearia',
     whatsapp: '5584988063250',
