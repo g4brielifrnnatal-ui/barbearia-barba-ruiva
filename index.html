@@ -3,49 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Barba Ruiva Barbearia | Corte • Barba • Estilo — Natal/RN</title>
+  <title>Barba Ruiva Barbearia | Corte. Barba. Estilo. — Natal/RN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="navbar">
+  <!-- Cabeçalho / Navegação -->
+  <header class="navbar" id="main-navbar">
     <div class="container nav-content">
-      <a href="#" class="brand">
+      <a href="#" class="brand" aria-label="Barba Ruiva Barbearia">
         <span class="brand-title">BARBA RUIVA</span>
         <span class="brand-sub">BARBEARIA</span>
       </a>
-      <nav class="nav-links">
+
+      <nav class="nav-links" aria-label="Navegação principal">
         <a href="#servicos">Cartela</a>
         <a href="#produtos">Produtos</a>
         <a href="#galeria">Galeria</a>
         <a href="#horarios">Horários</a>
-        <a href="#agendar" class="btn btn-primary btn-sm">Agendar Agora</a>
       </nav>
+
+      <div class="nav-actions">
+        <a href="#agendar" class="btn btn-primary btn-sm">Agendar horário</a>
+      </div>
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- Hero Section -->
   <section class="hero">
-    <div class="container hero-content">
-      <span class="badge">Natal/RN — Zona Norte</span>
-      <h1>Corte • Barba • Estilo</h1>
-      <p>Tradição na navalha, acabamento preciso e atendimento com hora marcada para você não perder tempo na fila.</p>
-      <div class="hero-actions">
-        <a href="#agendar" class="btn btn-primary">Marcar Horário</a>
-        <a href="https://wa.me/5584988063250" target="_blank" rel="noopener" class="btn btn-outline">Falar no WhatsApp</a>
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <span class="badge">Natal/RN — Zona Norte</span>
+        <h1>Corte. Barba. Estilo.</h1>
+        <p class="hero-subtitle">
+          Tradição de barbearia com execução precisa, cuidado na navalha e hora marcada para uma experiência direta, elegante e sem espera.
+        </p>
+        <div class="hero-actions">
+          <a href="#agendar" class="btn btn-primary">Agendar horário</a>
+          <a href="https://wa.me/5584988063250" target="_blank" rel="noopener" class="btn btn-outline">
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-media">
+        <div class="hero-media-frame">
+          <img
+            src="assets/img/espaco.jpg"
+            alt="Barbeiro em atendimento na Barba Ruiva Barbearia"
+            onerror="this.src='https://placehold.co/900x1050/140b00/fff1e0?text=Barba+Ruiva+Barbearia'"
+          />
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Serviços (Cartela) -->
+  <!-- Cartela de Serviços -->
   <section id="servicos" class="section">
     <div class="container">
       <div class="section-header">
         <h2>Cartela de Serviços</h2>
-        <p>Selecione um serviço para preencher automaticamente seu agendamento</p>
+        <p>Selecione um serviço para preencher automaticamente o seu agendamento.</p>
       </div>
       <div id="lista-servicos" class="grid-cards">
         <p class="loading-text">Carregando cartela de serviços...</p>
@@ -53,54 +74,63 @@
     </div>
   </section>
 
-  <!-- Agendamento -->
-  <section id="agendar" class="section section-dark">
+  <!-- Agendamento Online -->
+  <section id="agendar" class="section section-recessed">
     <div class="container">
       <div class="section-header">
         <h2>Agendamento Online</h2>
-        <p>Escolha o serviço, a data e um horário disponível na nossa grade</p>
+        <p>Escolha o serviço, a data e um horário disponível na agenda.</p>
       </div>
 
       <form id="form-agendamento" class="booking-card">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="select-servico">1. Serviço desejado *</label>
-            <select id="select-servico" required>
-              <option value="">Selecione um serviço...</option>
-            </select>
-          </div>
+        <div class="form-step-block">
+          <span class="step-label">Etapa 01 • Serviço e Data</span>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="select-servico">Serviço desejado *</label>
+              <select id="select-servico" required>
+                <option value="">Selecione um serviço...</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="input-data">2. Data *</label>
-            <input type="date" id="input-data" required />
-            <small class="hint">Atendimento de Terça a Sábado</small>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>3. Horários Disponíveis *</label>
-          <div id="container-horarios" class="slots-grid">
-            <span class="slot-placeholder">Selecione o serviço e a data para ver os horários livres.</span>
-          </div>
-          <input type="hidden" id="input-horario-inicio" required />
-          <input type="hidden" id="input-horario-fim" required />
-        </div>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="input-nome">Seu Nome *</label>
-            <input type="text" id="input-nome" placeholder="Ex: João Silva" required />
-          </div>
-
-          <div class="form-group">
-            <label for="input-whatsapp">Seu WhatsApp (com DDD) *</label>
-            <input type="tel" id="input-whatsapp" placeholder="(84) 99999-9999" required />
+            <div class="form-group">
+              <label for="input-data">Data *</label>
+              <input type="date" id="input-data" required />
+              <small class="hint">Atendimento de Terça a Sábado</small>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="input-obs">Observações (opcional)</label>
-          <input type="text" id="input-obs" placeholder="Ex: Degradê navalhado, barba alinhada..." />
+        <div class="form-step-block">
+          <span class="step-label">Etapa 02 • Horário</span>
+          <div class="form-group">
+            <label>Horários Disponíveis *</label>
+            <div id="container-horarios" class="slots-grid">
+              <span class="slot-placeholder">Selecione o serviço e a data para ver os horários livres.</span>
+            </div>
+            <input type="hidden" id="input-horario-inicio" required />
+            <input type="hidden" id="input-horario-fim" required />
+          </div>
+        </div>
+
+        <div class="form-step-block">
+          <span class="step-label">Etapa 03 • Seus Dados</span>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-nome">Seu Nome *</label>
+              <input type="text" id="input-nome" placeholder="Ex: João Silva" required />
+            </div>
+
+            <div class="form-group">
+              <label for="input-whatsapp">Seu WhatsApp (com DDD) *</label>
+              <input type="tel" id="input-whatsapp" placeholder="(84) 99999-9999" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-obs">Observações (opcional)</label>
+            <input type="text" id="input-obs" placeholder="Ex: Degradê navalhado, barba alinhada..." />
+          </div>
         </div>
 
         <div class="lgpd-box">
@@ -121,12 +151,12 @@
     </div>
   </section>
 
-  <!-- Produtos -->
+  <!-- Linha de Produtos -->
   <section id="produtos" class="section">
     <div class="container">
       <div class="section-header">
         <h2>Linha de Produtos</h2>
-        <p>Pomadas, óleos para barba e cuidados masculinos disponíveis na barbearia</p>
+        <p>Itens disponíveis na barbearia para manutenção diária do corte e da barba.</p>
       </div>
       <div id="lista-produtos" class="grid-cards">
         <p class="loading-text">Carregando vitrine de produtos...</p>
@@ -134,46 +164,52 @@
     </div>
   </section>
 
-  <!-- Galeria (Espaço, Cortes, Barbas, Clientes) -->
-  <section id="galeria" class="section section-dark">
+  <!-- Galeria — Nosso Espaço & Trabalhos -->
+  <section id="galeria" class="section section-recessed">
     <div class="container">
-      <div class="section-header">
-        <h2>Nosso Espaço & Trabalhos</h2>
-        <p>Acompanhe mais no Instagram <a href="https://www.instagram.com/barba.ruiva.barbearia/" target="_blank" rel="noopener">@barba.ruiva.barbearia</a></p>
+      <div class="section-header gallery-header">
+        <div>
+          <h2>Nosso Espaço &amp; Trabalhos</h2>
+          <p>Ambiente, cortes, barba e clientes da Barba Ruiva.</p>
+        </div>
+        <a href="https://www.instagram.com/barba.ruiva.barbearia/" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+          @barba.ruiva.barbearia
+        </a>
       </div>
+
       <div class="gallery-grid">
         <div class="gallery-item">
-          <img src="assets/img/espaco.jpg" alt="Espaço Barba Ruiva" onerror="this.src='https://placehold.co/600x400/161616/E86A17?text=Espaco+Barba+Ruiva'" />
+          <img src="assets/img/espaco.jpg" alt="Espaço Barba Ruiva" onerror="this.src='https://placehold.co/600x420/140b00/fff1e0?text=Espaco+Barba+Ruiva'" />
           <span>O Espaço</span>
         </div>
         <div class="gallery-item">
-          <img src="assets/img/cortes.jpg" alt="Cortes Masculinos" onerror="this.src='https://placehold.co/600x400/161616/E86A17?text=Cortes'" />
+          <img src="assets/img/cortes.jpg" alt="Cortes Masculinos" onerror="this.src='https://placehold.co/600x420/140b00/fff1e0?text=Cortes'" />
           <span>Cortes</span>
         </div>
         <div class="gallery-item">
-          <img src="assets/img/barbas.jpg" alt="Barba e Navalha" onerror="this.src='https://placehold.co/600x400/161616/E86A17?text=Barbas'" />
+          <img src="assets/img/barbas.jpg" alt="Barba e Navalha" onerror="this.src='https://placehold.co/600x420/140b00/fff1e0?text=Barbas'" />
           <span>Barbas</span>
         </div>
         <div class="gallery-item">
-          <img src="assets/img/clientes.jpg" alt="Clientes Barba Ruiva" onerror="this.src='https://placehold.co/600x400/161616/E86A17?text=Clientes'" />
+          <img src="assets/img/clientes.jpg" alt="Clientes Barba Ruiva" onerror="this.src='https://placehold.co/600x420/140b00/fff1e0?text=Clientes'" />
           <span>Clientes</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Horários & Localização -->
+  <!-- Rodapé -->
   <footer id="horarios" class="footer">
     <div class="container footer-grid">
       <div>
         <h3 class="brand-title">BARBA RUIVA BARBEARIA</h3>
-        <p>Corte • Barba • Estilo</p>
-        <p class="muted">📍 Natal/RN — Zona Norte</p>
-        <p class="https://wa.me/5584988063250" target="_blank" rel="noopener" class="btn btn-outline">(84)98806-3250</a>
+        <p class="footer-tagline">Corte. Barba. Estilo.</p>
+        <p class="muted">Natal/RN — Zona Norte</p>
+        <p class="muted">Telefone / WhatsApp: (84) 98806-3250</p>
       </div>
 
       <div>
-        <h4>Horário de Funcionamento</h4>
+        <h4>Horários de Funcionamento</h4>
         <ul class="hours-list">
           <li><strong>Terça a Sexta:</strong> 08h30 às 11h30 • 14h00 às 19h00</li>
           <li><strong>Sábado:</strong> 08h30 às 18h00</li>
@@ -182,11 +218,10 @@
       </div>
 
       <div>
-        <h4>Acesso Rápido</h4>
+        <h4>Acesso e Informações</h4>
         <ul class="footer-links">
-          <li><a href="#agendar">Agendar Horário</a></li>
           <li><a href="https://www.instagram.com/barba.ruiva.barbearia/" target="_blank" rel="noopener">Instagram Oficial</a></li>
-          <li><a href="privacidade.html">Política de Privacidade (LGPD)</a></li>
+          <li><a href="privacidade.html">Política de Privacidade</a></li>
           <li><a href="admin.html">Área do Barbeiro</a></li>
         </ul>
       </div>
@@ -197,5 +232,14 @@
   </footer>
 
   <script type="module" src="assets/js/app.js"></script>
+  <script>
+    const navbarEl = document.getElementById('main-navbar');
+    const syncNavbarScroll = () => {
+      if (!navbarEl) return;
+      navbarEl.classList.toggle('is-scrolled', window.scrollY > 24);
+    };
+    window.addEventListener('scroll', syncNavbarScroll, { passive: true });
+    syncNavbarScroll();
+  </script>
 </body>
 </html>
