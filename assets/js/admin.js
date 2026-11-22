@@ -8,7 +8,7 @@ const btnLogout = document.getElementById('btn-logout');
 
 function getHeaders(isJson = true) {
   const h = {
-    apikey: sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm,
+    apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcmVjbGlycWhkY21peWpjaWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyODgwMjcsImV4cCI6MjExMDg2NDAyN30.5eKLdzvNtMhV-yVmNS8qEFhEONwxKr-d8Nhsu27c-OM,
     Authorization: `Bearer ${accessToken}`
   };
   if (isJson) h['Content-Type'] = 'application/json';
@@ -39,7 +39,7 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
   try {
     const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/auth/v1/token?grant_type=password`, {
       method: 'POST',
-      headers: { apikey: sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm, 'Content-Type': 'application/json' },
+      headers: { apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcmVjbGlycWhkY21peWpjaWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyODgwMjcsImV4cCI6MjExMDg2NDAyN30.5eKLdzvNtMhV-yVmNS8qEFhEONwxKr-d8Nhsu27c-OM, 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
