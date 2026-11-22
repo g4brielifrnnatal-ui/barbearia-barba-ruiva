@@ -4,52 +4,286 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel Operador | Barba Ruiva Barbearia</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css" />
   <style>
-    .admin-wrapper { max-width: 1120px; margin: 40px auto; padding: 0 20px; }
-    .login-box { max-width: 420px; margin: 80px auto; background: var(--bg-card); padding: 32px; border-radius: 12px; border: 1px solid var(--border); }
-    .tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-    .tab-btn { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-    .table-responsive { overflow-x: auto; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-    th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); }
-    th { color: var(--accent); font-weight: 600; }
-    .status-badge { padding: 4px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; }
-    .status-pendente { background: rgba(234, 179, 8, 0.2); color: #fde047; }
-    .status-confirmado { background: rgba(22, 163, 74, 0.2); color: #86efac; }
-    .status-concluido { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
-    .status-cancelado { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
-    .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-    .btn-xs { padding: 6px 10px; font-size: 0.78rem; border-radius: 4px; border: none; cursor: pointer; font-weight: 600; }
-    .btn-green { background: #16a34a; color: #fff; }
-    .btn-blue { background: #2563eb; color: #fff; }
-    .btn-red { background: #dc2626; color: #fff; }
-    .hidden { display: none !important; }
+    .admin-wrapper {
+      width: 100%;
+      max-width: var(--page-max-width);
+      margin: 40px auto 52px;
+      padding: 0 20px;
+    }
+
+    .login-box {
+      max-width: 440px;
+      margin: 56px auto;
+      background-color: var(--color-midnight-cocoa);
+      padding: 28px;
+      border-radius: var(--radius-cards);
+      border: 1px solid var(--color-walnut);
+    }
+
+    .login-box h2 {
+      font-size: var(--text-heading-lg);
+      font-weight: var(--font-weight-regular);
+      line-height: var(--leading-heading-lg);
+      letter-spacing: var(--tracking-heading-lg);
+      color: var(--color-warm-cream);
+      margin-bottom: 8px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: var(--element-gap);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--color-walnut);
+      padding-bottom: 14px;
+    }
+
+    .tab-btn {
+      min-height: 40px;
+      background-color: transparent;
+      color: var(--color-warm-cream);
+      border: 1px solid var(--color-cedar);
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-family: var(--font-primary);
+      font-size: var(--text-body);
+      font-weight: var(--font-weight-medium);
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--color-amber-forge);
+      color: var(--color-amber-forge);
+    }
+
+    .tab-btn.active {
+      background-color: var(--color-amber-forge);
+      border-color: var(--color-amber-forge);
+      color: var(--color-espresso);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .agenda-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: var(--element-gap);
+    }
+
+    .agenda-toolbar h3,
+    .tab-panel h3 {
+      font-size: var(--text-heading-sm);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--leading-heading-sm);
+      letter-spacing: var(--tracking-heading-sm);
+      color: var(--color-warm-cream);
+    }
+
+    .agenda-filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .agenda-filter-group label {
+      font-size: var(--text-body);
+      color: var(--color-driftwood);
+    }
+
+    .agenda-filter-group input[type="date"] {
+      min-height: 40px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-cedar);
+      background-color: var(--color-midnight-cocoa);
+      color: var(--color-warm-cream);
+      font-family: var(--font-primary);
+      font-size: var(--text-body);
+    }
+
+    .agenda-filter-group input[type="date"]:focus {
+      outline: none;
+      border-color: var(--color-amber-forge);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      background-color: var(--color-midnight-cocoa);
+      border-radius: var(--radius-cards);
+      border: 1px solid var(--color-walnut);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: var(--text-body);
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-walnut);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--color-driftwood);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--text-caption);
+      letter-spacing: var(--tracking-caption);
+      text-transform: uppercase;
+      background-color: var(--color-espresso);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-caption);
+      font-weight: var(--font-weight-medium);
+      letter-spacing: var(--tracking-caption);
+      text-transform: uppercase;
+      border: 1px solid var(--color-walnut);
+      color: var(--color-warm-cream);
+      background-color: var(--color-espresso);
+    }
+
+    .status-pendente {
+      border-color: var(--color-cedar);
+      color: var(--color-driftwood);
+    }
+
+    .status-confirmado {
+      border-color: var(--color-amber-forge);
+      color: var(--color-amber-forge);
+    }
+
+    .status-concluido {
+      border-color: var(--color-warm-cream);
+      color: var(--color-warm-cream);
+    }
+
+    .status-cancelado {
+      border-color: var(--color-walnut);
+      color: var(--color-driftwood);
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-xs {
+      min-height: 32px;
+      padding: 6px 12px;
+      font-size: var(--text-caption);
+      font-family: var(--font-primary);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-cedar);
+      background-color: transparent;
+      color: var(--color-warm-cream);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .btn-xs:hover {
+      border-color: var(--color-amber-forge);
+      color: var(--color-amber-forge);
+    }
+
+    .btn-green {
+      background-color: var(--color-amber-forge);
+      border-color: var(--color-amber-forge);
+      color: var(--color-espresso);
+    }
+
+    .btn-green:hover {
+      background-color: var(--color-warm-cream);
+      border-color: var(--color-warm-cream);
+      color: var(--color-espresso);
+    }
+
+    .btn-blue {
+      border-color: var(--color-warm-cream);
+      color: var(--color-warm-cream);
+    }
+
+    .btn-red {
+      border-color: var(--color-walnut);
+      color: var(--color-driftwood);
+    }
+
+    .btn-whatsapp-action {
+      border-color: var(--color-amber-forge);
+      color: var(--color-amber-forge);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .admin-wrapper {
+        margin: 24px auto 40px;
+      }
+
+      .login-box {
+        margin: 32px 16px;
+        padding: 20px;
+      }
+
+      .login-box h2 {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <header class="navbar">
+  <header class="navbar is-scrolled">
     <div class="container nav-content">
       <a href="index.html" class="brand">
         <span class="brand-title">BARBA RUIVA</span>
         <span class="brand-sub">PAINEL DO OPERADOR</span>
       </a>
-      <div class="nav-links">
-        <a href="index.html">Ver Site</a>
-        <button id="btn-logout" class="btn btn-outline btn-sm hidden">Sair</button>
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-outline btn-sm">Ver Site</a>
+        <button id="btn-logout" class="btn btn-primary btn-sm hidden">Sair</button>
       </div>
     </div>
   </header>
 
   <!-- Tela de Login -->
   <div id="login-section" class="login-box">
-    <h2 style="font-family: 'Cinzel', serif; color: var(--accent); margin-bottom: 8px;">Acesso Restrito</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Entre com seu e-mail e senha de administrador.</p>
+    <h2>Acesso Restrito</h2>
+    <p class="muted" style="margin-bottom: 24px;">Entre com seu e-mail e senha de administrador.</p>
     <form id="form-login">
       <div class="form-group">
         <label for="login-email">E-mail</label>
@@ -59,7 +293,7 @@
         <label for="login-password">Senha</label>
         <input type="password" id="login-password" required placeholder="••••••••" />
       </div>
-      <button type="submit" class="btn btn-primary btn-block">Entrar no Painel</button>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;">Entrar no Painel</button>
       <div id="login-erro" class="feedback error hidden"></div>
     </form>
   </div>
@@ -67,19 +301,19 @@
   <!-- Dashboard -->
   <main id="dashboard-section" class="admin-wrapper hidden">
     <div class="tabs">
-      <button class="tab-btn active" data-tab="tab-agenda">📅 Agenda</button>
-      <button class="tab-btn" data-tab="tab-servicos">✂️ Cartela & Preços</button>
-      <button class="tab-btn" data-tab="tab-produtos">🧴 Produtos</button>
-      <button class="tab-btn" data-tab="tab-bloqueios">⛔ Bloqueios de Horário</button>
+      <button class="tab-btn active" data-tab="tab-agenda">Agenda</button>
+      <button class="tab-btn" data-tab="tab-servicos">Cartela &amp; Preços</button>
+      <button class="tab-btn" data-tab="tab-produtos">Produtos</button>
+      <button class="tab-btn" data-tab="tab-bloqueios">Bloqueios de Horário</button>
     </div>
 
     <!-- ABA 1: AGENDA -->
     <section id="tab-agenda" class="tab-panel active">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+      <div class="agenda-toolbar">
         <h3>Agendamentos</h3>
-        <div>
-          <label for="filtro-data-agenda" style="font-size: 0.85rem; color: var(--text-muted); margin-right: 8px;">Filtrar por data:</label>
-          <input type="date" id="filtro-data-agenda" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: #fff;" />
+        <div class="agenda-filter-group">
+          <label for="filtro-data-agenda">Filtrar por data:</label>
+          <input type="date" id="filtro-data-agenda" />
           <button id="btn-limpar-filtro" class="btn btn-outline btn-sm">Ver Próximos</button>
         </div>
       </div>
@@ -129,7 +363,7 @@
             <input type="text" id="srv-desc" placeholder="Breve descrição do serviço" />
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">Salvar Serviço</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Salvar Serviço</button>
       </form>
 
       <div class="table-responsive">
@@ -165,7 +399,7 @@
           <label>Descrição</label>
           <input type="text" id="prod-desc" placeholder="Fixação forte, acabamento seco..." />
         </div>
-        <button type="submit" class="btn btn-primary">Adicionar Produto</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Adicionar Produto</button>
       </form>
 
       <div class="table-responsive">
@@ -205,7 +439,7 @@
             <input type="time" id="bloq-fim" />
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">Criar Bloqueio</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Criar Bloqueio</button>
       </form>
 
       <div class="table-responsive">
