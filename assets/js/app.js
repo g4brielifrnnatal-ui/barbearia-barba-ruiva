@@ -77,7 +77,7 @@ async function carregarServicos() {
 async function carregarProdutos() {
   try {
     const res = await fetch(
-      `${CONFIG.SUPABASE_URL}/rest/v1/produtos?em_estoque=eq.true&order=created_at.desc`,
+      `${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/produtos?em_estoque=eq.true&order=created_at.desc`,
       { headers: HEADERS }
     );
     const produtos = await res.json();
@@ -129,11 +129,11 @@ async function atualizarHorariosLivres() {
   try {
     const [resAgendamentos, resBloqueios] = await Promise.all([
       fetch(
-        `${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?data_agendamento=eq.${dataStr}&status=in.(pendente,confirmado)&select=horario_inicio,horario_fim`,
+        `${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/agendamentos?data_agendamento=eq.${dataStr}&status=in.(pendente,confirmado)&select=horario_inicio,horario_fim`,
         { headers: HEADERS }
       ),
       fetch(
-        `${CONFIG.SUPABASE_URL}/rest/v1/bloqueios_agenda?data_bloqueio=eq.${dataStr}&select=hora_inicio,hora_fim`,
+        `${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/bloqueios_agenda?data_bloqueio=eq.${dataStr}&select=hora_inicio,hora_fim`,
         { headers: HEADERS }
       )
     ]);
@@ -207,7 +207,7 @@ formAgendamentoEl.addEventListener('submit', async (e) => {
   };
 
   try {
-    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos`, {
+    const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/agendamentos`, {
       method: 'POST',
       headers: { ...HEADERS, Prefer: 'return=representation' },
       body: JSON.stringify(payload)
