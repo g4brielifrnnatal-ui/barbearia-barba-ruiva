@@ -8,7 +8,7 @@ const btnLogout = document.getElementById('btn-logout');
 
 function getHeaders(isJson = true) {
   const h = {
-    apikey: CONFIG.SUPABASE_ANON_KEY,
+    apikey: sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm,
     Authorization: `Bearer ${accessToken}`
   };
   if (isJson) h['Content-Type'] = 'application/json';
@@ -37,9 +37,9 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
   const erroEl = document.getElementById('login-erro');
 
   try {
-    const res = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/auth/v1/token?grant_type=password`, {
       method: 'POST',
-      headers: { apikey: CONFIG.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      headers: { apikey: sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm, 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
@@ -80,7 +80,7 @@ async function carregarAgenda(dataFiltro = '') {
     ? `data_agendamento=eq.${dataFiltro}&order=horario_inicio.asc`
     : `data_agendamento=gte.${hoje}&order=data_agendamento.asc,horario_inicio.asc`;
 
-  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?${query}`, {
+  const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/agendamentos?${query}`, {
     headers: getHeaders(false)
   });
 
@@ -126,7 +126,7 @@ async function carregarAgenda(dataFiltro = '') {
 }
 
 window.atualizarStatus = async (id, novoStatus) => {
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?id=eq.${id}`, {
+  await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/agendamentos?id=eq.${id}`, {
     method: 'PATCH',
     headers: getHeaders(),
     body: JSON.stringify({ status: novoStatus })
@@ -144,7 +144,7 @@ document.getElementById('btn-limpar-filtro').addEventListener('click', () => {
 
 // --- 2. SERVIÇOS ---
 async function carregarServicosAdmin() {
-  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/servicos?order=ordem.asc`, {
+  const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/servicos?order=ordem.asc`, {
     headers: getHeaders(false)
   });
   const servicos = await res.json();
@@ -172,7 +172,7 @@ async function carregarServicosAdmin() {
 
 window.salvarPrecoServico = async (id) => {
   const novoPreco = parseFloat(document.getElementById(`preco-${id}`).value);
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/servicos?id=eq.${id}`, {
+  await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/servicos?id=eq.${id}`, {
     method: 'PATCH',
     headers: getHeaders(),
     body: JSON.stringify({ preco: novoPreco })
@@ -188,7 +188,7 @@ document.getElementById('form-novo-servico').addEventListener('submit', async (e
     duracao_minutos: parseInt(document.getElementById('srv-duracao').value, 10),
     descricao: document.getElementById('srv-desc').value.trim()
   };
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/servicos`, {
+  await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/servicos`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(payload)
@@ -199,7 +199,7 @@ document.getElementById('form-novo-servico').addEventListener('submit', async (e
 
 // --- 3. PRODUTOS ---
 async function carregarProdutosAdmin() {
-  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/produtos?order=created_at.desc`, {
+  const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/produtos?order=created_at.desc`, {
     headers: getHeaders(false)
   });
   const produtos = await res.json();
@@ -225,7 +225,7 @@ document.getElementById('form-novo-produto').addEventListener('submit', async (e
     preco: parseFloat(document.getElementById('prod-preco').value),
     descricao: document.getElementById('prod-desc').value.trim()
   };
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/produtos`, {
+  await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/produtos`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(payload)
@@ -236,7 +236,7 @@ document.getElementById('form-novo-produto').addEventListener('submit', async (e
 
 // --- 4. BLOQUEIOS ---
 async function carregarBloqueiosAdmin() {
-  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/bloqueios_agenda?order=data_bloqueio.asc`, {
+  const res = await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/bloqueios_agenda?order=data_bloqueio.asc`, {
     headers: getHeaders(false)
   });
   const bloqueios = await res.json();
@@ -265,7 +265,7 @@ document.getElementById('form-novo-bloqueio').addEventListener('submit', async (
     hora_inicio: document.getElementById('bloq-inicio').value || null,
     hora_fim: document.getElementById('bloq-fim').value || null
   };
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/bloqueios_agenda`, {
+  await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/bloqueios_agenda`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(payload)
@@ -276,7 +276,7 @@ document.getElementById('form-novo-bloqueio').addEventListener('submit', async (
 
 window.excluirRegistro = async (tabela, id) => {
   if (!confirm('Tem certeza que deseja excluir este item?')) return;
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${tabela}?id=eq.${id}`, {
+  await fetch(`${https://qoreclirqhdcmiyjcijl.supabase.co}/rest/v1/${tabela}?id=eq.${id}`, {
     method: 'DELETE',
     headers: getHeaders(false)
   });
