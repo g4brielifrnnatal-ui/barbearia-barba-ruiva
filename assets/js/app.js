@@ -2,8 +2,8 @@ import { CONFIG } from './config.js';
 import { gerarHorariosDisponiveis } from './schedule.js';
 
 const HEADERS = {
-  apikey: CONFIG.SUPABASE_ANON_KEY,
-  Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+  apikey: sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm,
+  Authorization: `Bearer ${sb_publishable_nkF29vCwJiHqYtsz52wr7w_ahn6FGAm}`,
   'Content-Type': 'application/json'
 };
 
