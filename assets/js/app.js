@@ -251,3 +251,73 @@ inputDataEl.addEventListener('change', atualizarHorariosLivres);
 
 carregarServicos();
 carregarProdutos();
+// 5. Consultar Agendamentos do Cliente por Telefone
+const inputConsultaTelefoneEl = document.getElementById('input-consulta-telefone');
+const btnBuscarAgendamentosEl = document.getElementById('btn-buscar-agendamentos');
+const resultadoMeusAgendamentosEl = document.getElementById('resultado-meus-agendamentos');
+
+async function consultarAgendamentosPorTelefone() {
+  if (!inputConsultaTelefoneEl || !resultadoMeusAgendamentosEl) return;
+
+  const digitos = inputConsultaTelefoneEl.value.replace(/\D/g, '');
+  if (digitos.length < 8) {
+    resultadoMeusAgendamentosEl.className = 'my-bookings-results feedback error';
+    resultadoMeusAgendamentosEl.textContent = 'Digite um número de telefone válido (com DDD) para consultar.';
+    return;
+  }
+
+  resultadoMeusAgendamentosEl.className = 'my-bookings-results';
+  resultadoMeusAgendamentosEl.innerHTML = '<p class="loading-text">Buscando seus agendamentos...</p>';
+
+  try {
+    const query = encodeURIComponent(`eq.${digitos}`);
+    const res = await fetch(
+      `${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?cliente_whatsapp=${query}&select=id,servico_nome,barbeiro_nome,data_agendamento,horario_inicio,horario_fim,status,valor_total&order=data_agendamento.desc,horario_inicio.asc`,
+      { headers: HEADERS }
+    );
+
+    if (!res.ok) throw new Error('Falha ao consultar agendamentos');
+
+    const registros = await res.json();
+
+    if (!registros.length) {
+      resultadoMeusAgendamentosEl.innerHTML =
+        '<div class="my-booking-item"><span class="muted">Nenhum agendamento encontrado para este número.</span></div>';
+      return;
+    }
+
+    resultadoMeusAgendamentosEl.innerHTML = '';
+    registros.forEach(item => {
+      const dataBr = item.data_agendamento.split('-').reverse().join('/');
+      const horaIni = item.horario_inicio.slice(0, 5);
+      const horaFim = item.horario_fim.slice(0, 5);
+      const row = document.createElement('div');
+      row.className = 'my-booking-item';
+      row.innerHTML = `
+        <div>
+          <strong>${item.servico_nome}</strong> — <span style="color: var(--color-amber-forge);">${formatarMoeda(item.valor_total)}</span>
+          <div class="my-booking-meta">
+            Data: ${dataBr} • ${horaIni} às ${horaFim}${item.barbeiro_nome ? ` • Profissional: ${item.barbeiro_nome}` : ''}
+          </div>
+        </div>
+        <span class="booking-status-pill ${item.status}">${item.status}</span>
+      `;
+      resultadoMeusAgendamentosEl.appendChild(row);
+    });
+  } catch (err) {
+    resultadoMeusAgendamentosEl.className = 'my-bookings-results feedback error';
+    resultadoMeusAgendamentosEl.textContent = 'Não foi possível consultar agora. Tente novamente em instantes.';
+  }
+}
+
+if (btnBuscarAgendamentosEl) {
+  btnBuscarAgendamentosEl.addEventListener('click', consultarAgendamentosPorTelefone);
+}
+if (inputConsultaTelefoneEl) {
+  inputConsultaTelefoneEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      consultarAgendamentosPorTelefone();
+    }
+  });
+}
