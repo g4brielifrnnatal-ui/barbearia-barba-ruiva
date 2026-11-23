@@ -357,6 +357,7 @@
       <button class="tab-btn" data-tab="tab-servicos">Cartela &amp; Preços</button>
       <button class="tab-btn" data-tab="tab-produtos">Produtos</button>
       <button class="tab-btn" data-tab="tab-bloqueios">Bloqueios de Horário</button>
+      <button class="tab-btn" data-tab="tab-barbeiros">Barbeiros</button>
     </div>
 
     <!-- ABA 1: AGENDA -->
@@ -507,6 +508,37 @@
             </tr>
           </thead>
           <tbody id="tbody-bloqueios"></tbody>
+        </table>
+      </div>
+    </section>
+    
+    <!-- ABA 5: BARBEIROS -->
+    <section id="tab-barbeiros" class="tab-panel">
+      <form id="form-novo-barbeiro" class="booking-card" style="max-width: 100%; margin-bottom: 24px;">
+        <h3 style="margin-bottom: 16px;">Adicionar Barbeiro</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nome do Barbeiro *</label>
+            <input type="text" id="barb-nome" required placeholder="Ex: Rafael" />
+          </div>
+          <div class="form-group">
+            <label>Ordem de Exibição</label>
+            <input type="number" id="barb-ordem" value="1" min="0" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Adicionar Barbeiro</button>
+      </form>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Ordem</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-barbeiros"></tbody>
         </table>
       </div>
     </section>
