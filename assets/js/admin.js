@@ -384,3 +384,66 @@ window.excluirRegistro = async (tabela, id) => {
 };
 
 if (accessToken) iniciarDashboard();
+
+// --- 5. BARBEIROS (ADICIONAR / REMOVER) ---
+async function carregarBarbeirosAdmin() {
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/barbeiros?order=ordem.asc,nome.asc`, {
+    headers: getHeaders(false)
+  });
+  const barbeiros = await res.json();
+  const tbody = document.getElementById('tbody-barbeiros');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+
+  if (!barbeiros.length) {
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--color-driftwood);">Nenhum barbeiro cadastrado.</td></tr>';
+    return;
+  }
+
+  barbeiros.forEach(b => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${b.nome}</strong></td>
+      <td>${b.ordem ?? 0}</td>
+      <td>
+        <button type="button" class="btn-xs btn-red" onclick="removerBarbeiro('${b.id}')">Retirar</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+const formNovoBarbeiroEl = document.getElementById('form-novo-barbeiro');
+if (formNovoBarbeiroEl) {
+  formNovoBarbeiroEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('barb-nome').value.trim();
+    const ordem = parseInt(document.getElementById('barb-ordem').value || '0', 10);
+    if (!nome) return;
+
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/barbeiros`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ nome, ordem, ativo: true })
+    });
+
+    if (!res.ok) {
+      alert('Não foi possível adicionar o barbeiro (verifique se o nome já existe).');
+      return;
+    }
+
+    e.target.reset();
+    document.getElementById('barb-ordem').value = '1';
+    carregarBarbeirosAdmin();
+  });
+}
+
+window.removerBarbeiro = async (id) => {
+  if (!confirm('Deseja retirar este barbeiro da lista?')) return;
+  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/barbeiros?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(false)
+  });
+  carregarBarbeirosAdmin();
+};
