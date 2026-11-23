@@ -8,11 +8,13 @@ const HEADERS = {
 };
 
 let servicosCache = [];
+let barbeirosCache = [];
 
 // Elementos DOM
 const listaServicosEl = document.getElementById('lista-servicos');
 const listaProdutosEl = document.getElementById('lista-produtos');
 const selectServicoEl = document.getElementById('select-servico');
+const selectBarbeiroEl = document.getElementById('select-barbeiro');
 const inputDataEl = document.getElementById('input-data');
 const containerHorariosEl = document.getElementById('container-horarios');
 const inputInicioEl = document.getElementById('input-horario-inicio');
@@ -37,7 +39,6 @@ async function carregarServicos() {
     selectServicoEl.innerHTML = '<option value="">Selecione um serviço...</option>';
 
     servicosCache.forEach(srv => {
-      // Card na vitrine
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
@@ -62,7 +63,6 @@ async function carregarServicos() {
       });
       listaServicosEl.appendChild(card);
 
-      // Option no formulário
       const opt = document.createElement('option');
       opt.value = srv.id;
       opt.textContent = `${srv.nome} — ${formatarMoeda(srv.preco)} (${srv.duracao_minutos} min)`;
@@ -70,6 +70,32 @@ async function carregarServicos() {
     });
   } catch (err) {
     listaServicosEl.innerHTML = '<p class="loading-text">Erro ao carregar serviços.</p>';
+  }
+}
+
+// 1b. Carregar Barbeiros Ativos
+async function carregarBarbeiros() {
+  if (!selectBarbeiroEl) return;
+  try {
+    const res = await fetch(
+      `${CONFIG.SUPABASE_URL}/rest/v1/barbeiros?ativo=eq.true&order=ordem.asc,nome.asc`,
+      { headers: HEADERS }
+    );
+    barbeirosCache = await res.json();
+
+    selectBarbeiroEl.innerHTML = '<option value="">Selecione o barbeiro...</option>';
+    barbeirosCache.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.nome;
+      opt.textContent = b.nome;
+      selectBarbeiroEl.appendChild(opt);
+    });
+
+    if (barbeirosCache.length === 1) {
+      selectBarbeiroEl.value = barbeirosCache[0].nome;
+    }
+  } catch (err) {
+    selectBarbeiroEl.innerHTML = '<option value="">Erro ao carregar barbeiros</option>';
   }
 }
 
@@ -111,15 +137,17 @@ async function carregarProdutos() {
   }
 }
 
-// 3. Buscar e Renderizar Horários Disponíveis
+// 3. Buscar e Renderizar Horários Disponíveis (por Barbeiro + Data + Serviço)
 async function atualizarHorariosLivres() {
   const servicoId = selectServicoEl.value;
+  const barbeiroNome = selectBarbeiroEl ? selectBarbeiroEl.value : '';
   const dataStr = inputDataEl.value;
   inputInicioEl.value = '';
   inputFimEl.value = '';
 
-  if (!servicoId || !dataStr) {
-    containerHorariosEl.innerHTML = '<span class="slot-placeholder">Selecione o serviço e a data para ver os horários livres.</span>';
+  if (!servicoId || !barbeiroNome || !dataStr) {
+    containerHorariosEl.innerHTML =
+      '<span class="slot-placeholder">Selecione o serviço, o barbeiro e a data para ver os horários livres.</span>';
     return;
   }
 
@@ -127,9 +155,10 @@ async function atualizarHorariosLivres() {
   containerHorariosEl.innerHTML = '<span class="slot-placeholder">Consultando agenda...</span>';
 
   try {
+    const filtroBarbeiro = encodeURIComponent(`eq.${barbeiroNome}`);
     const [resAgendamentos, resBloqueios] = await Promise.all([
       fetch(
-        `${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?data_agendamento=eq.${dataStr}&status=in.(pendente,confirmado)&select=horario_inicio,horario_fim`,
+        `${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?data_agendamento=eq.${dataStr}&barbeiro_nome=${filtroBarbeiro}&status=in.(pendente,confirmado)&select=horario_inicio,horario_fim`,
         { headers: HEADERS }
       ),
       fetch(
@@ -149,7 +178,8 @@ async function atualizarHorariosLivres() {
     });
 
     if (!slots.length) {
-      containerHorariosEl.innerHTML = '<span class="slot-placeholder">Nenhum horário disponível nesta data (fechado ou agenda lotada).</span>';
+      containerHorariosEl.innerHTML =
+        '<span class="slot-placeholder">Nenhum horário disponível para este barbeiro nesta data.</span>';
       return;
     }
 
@@ -168,13 +198,20 @@ async function atualizarHorariosLivres() {
       containerHorariosEl.appendChild(btn);
     });
   } catch (err) {
-    containerHorariosEl.innerHTML = '<span class="slot-placeholder">Erro ao consultar horários. Tente novamente.</span>';
+    containerHorariosEl.innerHTML =
+      '<span class="slot-placeholder">Erro ao consultar horários. Tente novamente.</span>';
   }
 }
 
-// 4. Enviar Agendamento
+// 4. Enviar Agendamento com o Barbeiro Escolhido
 formAgendamentoEl.addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  const barbeiroEscolhido = selectBarbeiroEl ? selectBarbeiroEl.value : '';
+  if (!barbeiroEscolhido) {
+    alert('Por favor, selecione o barbeiro.');
+    return;
+  }
 
   if (!inputInicioEl.value) {
     alert('Por favor, selecione um horário disponível.');
@@ -198,6 +235,7 @@ formAgendamentoEl.addEventListener('submit', async (e) => {
     cliente_whatsapp: whatsappCliente,
     servico_id: servico.id,
     servico_nome: servico.nome,
+    barbeiro_nome: barbeiroEscolhido,
     valor_total: servico.preco,
     data_agendamento: dataStr,
     horario_inicio: horarioInicio,
@@ -219,6 +257,7 @@ formAgendamentoEl.addEventListener('submit', async (e) => {
     const textoZap = encodeURIComponent(
       `Olá, Barba Ruiva! Acabei de agendar pelo site:\n` +
       `• *Cliente:* ${nome}\n` +
+      `• *Barbeiro:* ${barbeiroEscolhido}\n` +
       `• *Serviço:* ${servico.nome} (${formatarMoeda(servico.preco)})\n` +
       `• *Data:* ${dataFormatada} às *${horarioInicio}*`
     );
@@ -226,14 +265,15 @@ formAgendamentoEl.addEventListener('submit', async (e) => {
     feedbackEl.className = 'feedback success';
     feedbackEl.innerHTML = `
       <strong>Agendamento registrado com sucesso!</strong><br>
-      Te esperamos no dia <strong>${dataFormatada}</strong> às <strong>${horarioInicio}</strong>.<br><br>
+      Barbeiro: <strong>${barbeiroEscolhido}</strong> • Dia <strong>${dataFormatada}</strong> às <strong>${horarioInicio}</strong>.<br><br>
       <a href="https://wa.me/${CONFIG.BARBEARIA.whatsapp}?text=${textoZap}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
         Enviar Comprovante no WhatsApp da Barbearia
       </a>
     `;
 
     formAgendamentoEl.reset();
-    containerHorariosEl.innerHTML = '<span class="slot-placeholder">Selecione o serviço e a data para ver os horários livres.</span>';
+    containerHorariosEl.innerHTML =
+      '<span class="slot-placeholder">Selecione o serviço, o barbeiro e a data para ver os horários livres.</span>';
   } catch (err) {
     feedbackEl.className = 'feedback error';
     feedbackEl.textContent = 'Não foi possível concluir o agendamento. Verifique sua conexão ou chame no WhatsApp.';
@@ -243,18 +283,29 @@ formAgendamentoEl.addEventListener('submit', async (e) => {
   }
 });
 
-// Inicialização
-const hoje = new Date().toISOString().split('T')[0];
-inputDataEl.min = hoje;
-selectServicoEl.addEventListener('change', atualizarHorariosLivres);
-inputDataEl.addEventListener('change', atualizarHorariosLivres);
-
-carregarServicos();
-carregarProdutos();
-// 5. Consultar Agendamentos do Cliente por Telefone
+// 5. Consultar e Cancelar Agendamentos do Cliente por Telefone
 const inputConsultaTelefoneEl = document.getElementById('input-consulta-telefone');
 const btnBuscarAgendamentosEl = document.getElementById('btn-buscar-agendamentos');
 const resultadoMeusAgendamentosEl = document.getElementById('resultado-meus-agendamentos');
+
+window.cancelarAgendamentoCliente = async (agendamentoId) => {
+  if (!confirm('Deseja realmente cancelar este agendamento?')) return;
+
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?id=eq.${agendamentoId}`, {
+      method: 'PATCH',
+      headers: { ...HEADERS, Prefer: 'return=representation' },
+      body: JSON.stringify({ status: 'cancelado' })
+    });
+
+    if (!res.ok) throw new Error('Falha ao cancelar agendamento');
+
+    await consultarAgendamentosPorTelefone();
+    await atualizarHorariosLivres();
+  } catch (err) {
+    alert('Não foi possível cancelar o agendamento agora. Tente novamente.');
+  }
+};
 
 async function consultarAgendamentosPorTelefone() {
   if (!inputConsultaTelefoneEl || !resultadoMeusAgendamentosEl) return;
@@ -291,16 +342,25 @@ async function consultarAgendamentosPorTelefone() {
       const dataBr = item.data_agendamento.split('-').reverse().join('/');
       const horaIni = item.horario_inicio.slice(0, 5);
       const horaFim = item.horario_fim.slice(0, 5);
+      const podeCancelar = item.status === 'pendente' || item.status === 'confirmado';
+
       const row = document.createElement('div');
       row.className = 'my-booking-item';
       row.innerHTML = `
         <div>
           <strong>${item.servico_nome}</strong> — <span style="color: var(--color-amber-forge);">${formatarMoeda(item.valor_total)}</span>
           <div class="my-booking-meta">
-            Data: ${dataBr} • ${horaIni} às ${horaFim}${item.barbeiro_nome ? ` • Profissional: ${item.barbeiro_nome}` : ''}
+            Data: ${dataBr} • ${horaIni} às ${horaFim}${item.barbeiro_nome ? ` • Barbeiro: ${item.barbeiro_nome}` : ''}
           </div>
         </div>
-        <span class="booking-status-pill ${item.status}">${item.status}</span>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span class="booking-status-pill ${item.status}">${item.status}</span>
+          ${
+            podeCancelar
+              ? `<button type="button" class="btn btn-outline btn-sm" onclick="cancelarAgendamentoCliente('${item.id}')">Cancelar agendamento</button>`
+              : ''
+          }
+        </div>
       `;
       resultadoMeusAgendamentosEl.appendChild(row);
     });
@@ -321,3 +381,16 @@ if (inputConsultaTelefoneEl) {
     }
   });
 }
+
+// Inicialização
+const hoje = new Date().toISOString().split('T')[0];
+inputDataEl.min = hoje;
+selectServicoEl.addEventListener('change', atualizarHorariosLivres);
+if (selectBarbeiroEl) {
+  selectBarbeiroEl.addEventListener('change', atualizarHorariosLivres);
+}
+inputDataEl.addEventListener('change', atualizarHorariosLivres);
+
+carregarServicos();
+carregarBarbeiros();
+carregarProdutos();
