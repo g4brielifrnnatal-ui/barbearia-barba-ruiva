@@ -772,3 +772,87 @@ img {
     grid-template-columns: 1fr;
   }
 }
+/* Consulta: Ver Meus Agendamentos */
+.my-bookings-box {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-walnut);
+}
+
+.my-bookings-header {
+  margin-bottom: 14px;
+}
+
+.my-bookings-header h3 {
+  font-size: var(--text-subheading);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-warm-cream);
+  margin-bottom: 4px;
+}
+
+.my-bookings-search {
+  display: flex;
+  gap: var(--element-gap);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.my-bookings-search input {
+  flex: 1 1 240px;
+  min-height: 44px;
+  padding: 12px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-cedar);
+  background-color: transparent;
+  color: var(--color-warm-cream);
+  font-family: var(--font-primary);
+  font-size: var(--text-body);
+}
+
+.my-bookings-search input::placeholder {
+  color: var(--color-driftwood);
+}
+
+.my-bookings-search input:focus {
+  outline: none;
+  border-color: var(--color-amber-forge);
+}
+
+.my-bookings-results {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.my-booking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border-radius: var(--radius-cards);
+  border: 1px solid var(--color-walnut);
+  background-color: var(--color-midnight-cocoa);
+}
+
+.my-booking-meta {
+  font-size: var(--text-caption);
+  color: var(--color-driftwood);
+  margin-top: 2px;
+}
+
+.booking-status-pill {
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  border: 1px solid var(--color-walnut);
+  color: var(--color-warm-cream);
+}
+
+.booking-status-pill.confirmado {
+  border-color: var(--color-amber-forge);
+  color: var(--color-amber-forge);
+}
