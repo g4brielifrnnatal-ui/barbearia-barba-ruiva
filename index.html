@@ -100,6 +100,30 @@
 
   <!-- Agendamento Online -->
   <section id="agendar" class="section section-recessed">
+    <!-- Consulta Rápida: Ver Meus Agendamentos -->
+        <div id="meus-agendamentos-box" class="my-bookings-box">
+          <div class="my-bookings-header">
+            <div>
+              <span class="step-label">Consulta Rápida</span>
+              <h3>Ver meus agendamentos</h3>
+              <p class="muted">Digite o número de WhatsApp com DDD usado no agendamento.</p>
+            </div>
+          </div>
+
+          <div class="my-bookings-search">
+            <input
+              type="tel"
+              id="input-consulta-telefone"
+              placeholder="Ex: (84) 99999-9999"
+              aria-label="Número de telefone para consultar agendamentos"
+            />
+            <button type="button" id="btn-buscar-agendamentos" class="btn btn-outline">
+              Buscar agendamentos
+            </button>
+          </div>
+
+          <div id="resultado-meus-agendamentos" class="my-bookings-results hidden"></div>
+        </div>
     <div class="container">
       <div class="section-header">
         <h2>Agendamento Online</h2>
