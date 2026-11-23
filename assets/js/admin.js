@@ -73,12 +73,75 @@ async function iniciarDashboard() {
   ]);
 }
 
-// --- 1. AGENDA ---
+// --- 1. AGENDA, FATURAMENTO POR BARBEIRO E EXCLUSÃO ---
+const BARBEIROS_PADRAO = ['Barbeiro 1', 'Barbeiro 2'];
+
+function obterDataHojeLocal() {
+  const agora = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Fortaleza' }));
+  const ano = agora.getFullYear();
+  const mes = String(agora.getMonth() + 1).padStart(2, '0');
+  const dia = String(agora.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+function renderizarResumoFaturamento(lista, dataReferencia) {
+  const resumoEl = document.getElementById('resumo-faturamento');
+  if (!resumoEl) return;
+
+  // Considera agendamentos ativos/concluídos (exclui cancelados do faturamento previsto)
+  const validos = lista.filter(ag => ag.status !== 'cancelado');
+
+  const porBarbeiro = {};
+  BARBEIROS_PADRAO.forEach(nome => {
+    porBarbeiro[nome] = { total: 0, qtd: 0 };
+  });
+
+  let totalGeralDia = 0;
+  let qtdGeralDia = 0;
+
+  validos.forEach(ag => {
+    const barbeiro = (ag.barbeiro_nome || 'Barbeiro 1').trim();
+    const valor = Number(ag.valor_total || 0);
+
+    if (!porBarbeiro[barbeiro]) {
+      porBarbeiro[barbeiro] = { total: 0, qtd: 0 };
+    }
+    porBarbeiro[barbeiro].total += valor;
+    porBarbeiro[barbeiro].qtd += 1;
+
+    totalGeralDia += valor;
+    qtdGeralDia += 1;
+  });
+
+  const dataBr = dataReferencia.split('-').reverse().join('/');
+  const cardsBarbeiros = Object.entries(porBarbeiro)
+    .map(([nome, dados]) => `
+      <div class="revenue-card">
+        <div class="revenue-label">${nome}</div>
+        <div class="revenue-value">${formatarMoeda(dados.total)}</div>
+        <div class="revenue-sub">${dados.qtd} atendimento(s) • ${dataBr}</div>
+      </div>
+    `)
+    .join('');
+
+  resumoEl.innerHTML = `
+    ${cardsBarbeiros}
+    <div class="revenue-card total-dia">
+      <div class="revenue-label">Total Previsto do Dia</div>
+      <div class="revenue-value">${formatarMoeda(totalGeralDia)}</div>
+      <div class="revenue-sub">${qtdGeralDia} atendimento(s) no dia ${dataBr}</div>
+    </div>
+  `;
+}
+
 async function carregarAgenda(dataFiltro = '') {
-  const hoje = new Date().toISOString().split('T')[0];
-  const query = dataFiltro
-    ? `data_agendamento=eq.${dataFiltro}&order=horario_inicio.asc`
-    : `data_agendamento=gte.${hoje}&order=data_agendamento.asc,horario_inicio.asc`;
+  const dataReferencia = dataFiltro || obterDataHojeLocal();
+  const inputFiltroEl = document.getElementById('filtro-data-agenda');
+  if (inputFiltroEl && !inputFiltroEl.value) {
+    inputFiltroEl.value = dataReferencia;
+  }
+
+  const query = `data_agendamento=eq.${dataReferencia}&order=horario_inicio.asc`;
 
   const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?${query}`, {
     headers: getHeaders(false)
@@ -90,40 +153,64 @@ async function carregarAgenda(dataFiltro = '') {
   }
 
   const lista = await res.json();
+  renderizarResumoFaturamento(lista, dataReferencia);
+
   const tbody = document.getElementById('tbody-agenda');
   tbody.innerHTML = '';
 
   if (!lista.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Nenhum agendamento encontrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--color-driftwood);">Nenhum agendamento para esta data.</td></tr>';
     return;
   }
 
   lista.forEach(ag => {
     const dataBr = ag.data_agendamento.split('-').reverse().join('/');
     const hora = ag.horario_inicio.slice(0, 5);
+    const barbeiroAtual = ag.barbeiro_nome || 'Barbeiro 1';
+    const opcoesBarbeiro = Array.from(new Set([...BARBEIROS_PADRAO, barbeiroAtual]))
+      .map(nome => `<option value="${nome}" ${nome === barbeiroAtual ? 'selected' : ''}>${nome}</option>`)
+      .join('');
+
     const msgConfirm = encodeURIComponent(
-      `Olá, ${ag.cliente_nome}! Aqui é da *Barba Ruiva Barbearia*. Seu horário para *${ag.servico_nome}* no dia *${dataBr}* às *${hora}* está confirmado!`
+      `Olá, ${ag.cliente_nome}! Aqui é da *Barba Ruiva Barbearia*. Seu horário para *${ag.servico_nome}* com *${barbeiroAtual}* no dia *${dataBr}* às *${hora}* está confirmado!`
     );
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${dataBr}</strong><br>${hora}</td>
-      <td>${ag.cliente_nome}<br><small style="color: var(--text-muted);">${ag.cliente_whatsapp}</small></td>
-      <td>${ag.servico_nome}${ag.observacoes ? `<br><small style="color: var(--accent);">Obs: ${ag.observacoes}</small>` : ''}</td>
+      <td>${ag.cliente_nome}<br><small style="color: var(--color-driftwood);">${ag.cliente_whatsapp}</small></td>
+      <td>
+        ${ag.servico_nome}
+        ${ag.observacoes ? `<br><small style="color: var(--color-amber-forge);">Obs: ${ag.observacoes}</small>` : ''}
+        <br>
+        <select class="barber-select" aria-label="Barbeiro responsável" onchange="atualizarBarbeiro('${ag.id}', this.value)">
+          ${opcoesBarbeiro}
+        </select>
+      </td>
       <td>${formatarMoeda(ag.valor_total)}</td>
       <td><span class="status-badge status-${ag.status}">${ag.status}</span></td>
       <td>
         <div class="action-btns">
           <button class="btn-xs btn-green" onclick="atualizarStatus('${ag.id}', 'confirmado')">Confirmar</button>
           <button class="btn-xs btn-blue" onclick="atualizarStatus('${ag.id}', 'concluido')">Concluir</button>
-          <button class="btn-xs btn-red" onclick="atualizarStatus('${ag.id}', 'cancelado')">Cancelar</button>
-          <a href="https://wa.me/55${ag.cliente_whatsapp}?text=${msgConfirm}" target="_blank" class="btn-xs" style="background:#25D366; color:#000; text-decoration:none;">WhatsApp</a>
+          <button class="btn-xs" onclick="atualizarStatus('${ag.id}', 'cancelado')">Cancelar</button>
+          <button class="btn-xs btn-red" onclick="excluirAgendamento('${ag.id}')">Excluir</button>
+          <a href="https://wa.me/55${ag.cliente_whatsapp}?text=${msgConfirm}" target="_blank" rel="noopener" class="btn-xs btn-whatsapp-action">WhatsApp</a>
         </div>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
+
+window.atualizarBarbeiro = async (id, novoBarbeiro) => {
+  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: getHeaders(),
+    body: JSON.stringify({ barbeiro_nome: novoBarbeiro })
+  });
+  carregarAgenda(document.getElementById('filtro-data-agenda').value);
+};
 
 window.atualizarStatus = async (id, novoStatus) => {
   await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?id=eq.${id}`, {
@@ -134,12 +221,23 @@ window.atualizarStatus = async (id, novoStatus) => {
   carregarAgenda(document.getElementById('filtro-data-agenda').value);
 };
 
+window.excluirAgendamento = async (id) => {
+  if (!confirm('Deseja excluir permanentemente este agendamento?')) return;
+  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/agendamentos?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(false)
+  });
+  carregarAgenda(document.getElementById('filtro-data-agenda').value);
+};
+
 document.getElementById('filtro-data-agenda').addEventListener('change', (e) => {
   carregarAgenda(e.target.value);
 });
+
 document.getElementById('btn-limpar-filtro').addEventListener('click', () => {
-  document.getElementById('filtro-data-agenda').value = '';
-  carregarAgenda();
+  const hoje = obterDataHojeLocal();
+  document.getElementById('filtro-data-agenda').value = hoje;
+  carregarAgenda(hoje);
 });
 
 // --- 2. SERVIÇOS ---
