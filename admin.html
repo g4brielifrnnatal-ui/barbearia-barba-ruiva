@@ -9,6 +9,58 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Manrope:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css" />
   <style>
+    .revenue-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: var(--element-gap);
+      margin-bottom: 20px;
+    }
+
+    .revenue-card {
+      background-color: var(--color-midnight-cocoa);
+      border: 1px solid var(--color-walnut);
+      border-radius: var(--radius-cards);
+      padding: 16px;
+    }
+
+    .revenue-card.total-dia {
+      border-color: var(--color-amber-forge);
+    }
+
+    .revenue-label {
+      font-size: var(--text-caption);
+      color: var(--color-driftwood);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-caption);
+      margin-bottom: 6px;
+    }
+
+    .revenue-value {
+      font-size: var(--text-heading-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-warm-cream);
+    }
+
+    .revenue-card.total-dia .revenue-value {
+      color: var(--color-amber-forge);
+    }
+
+    .revenue-sub {
+      font-size: var(--text-caption);
+      color: var(--color-driftwood);
+      margin-top: 4px;
+    }
+
+    .barber-select {
+      margin-top: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-cedar);
+      background-color: var(--color-espresso);
+      color: var(--color-warm-cream);
+      font-family: var(--font-primary);
+      font-size: var(--text-caption);
+    }
     .admin-wrapper {
       width: 100%;
       max-width: var(--page-max-width);
@@ -310,13 +362,16 @@
     <!-- ABA 1: AGENDA -->
     <section id="tab-agenda" class="tab-panel active">
       <div class="agenda-toolbar">
-        <h3>Agendamentos</h3>
+        <h3>Agendamentos &amp; Faturamento Previsto</h3>
         <div class="agenda-filter-group">
-          <label for="filtro-data-agenda">Filtrar por data:</label>
+          <label for="filtro-data-agenda">Data de referência:</label>
           <input type="date" id="filtro-data-agenda" />
-          <button id="btn-limpar-filtro" class="btn btn-outline btn-sm">Ver Próximos</button>
+          <button id="btn-limpar-filtro" class="btn btn-outline btn-sm">Hoje</button>
         </div>
       </div>
+
+      <!-- Resumo de Faturamento por Barbeiro + Total do Dia -->
+      <div id="resumo-faturamento" class="revenue-summary"></div>
 
       <div class="table-responsive">
         <table>
@@ -324,7 +379,7 @@
             <tr>
               <th>Data / Hora</th>
               <th>Cliente</th>
-              <th>Serviço</th>
+              <th>Serviço / Barbeiro</th>
               <th>Valor</th>
               <th>Status</th>
               <th>Ações</th>
@@ -334,7 +389,6 @@
         </table>
       </div>
     </section>
-
     <!-- ABA 2: SERVIÇOS -->
     <section id="tab-servicos" class="tab-panel">
       <form id="form-novo-servico" class="booking-card" style="max-width: 100%; margin-bottom: 24px;">
