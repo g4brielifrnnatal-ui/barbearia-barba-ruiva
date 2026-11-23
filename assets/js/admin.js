@@ -74,7 +74,7 @@ async function iniciarDashboard() {
 }
 
 // --- 1. AGENDA, FATURAMENTO POR BARBEIRO E EXCLUSÃO ---
-const BARBEIROS_PADRAO = ['Barbeiro 1', 'Barbeiro 2'];
+const BARBEIROS_PADRAO = ['Jailton', 'julio'];
 
 function obterDataHojeLocal() {
   const agora = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Fortaleza' }));
